@@ -74,11 +74,11 @@ void PatchLoader::load_patches() {
     String patch_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("patches/");
     String asset_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("AssetBundles/");
     
-    load_patch(patch_directory);
-    load_patch(asset_directory);
+    PatchLoader::load_patch(patch_directory);
+    PatchLoader::load_patch(asset_directory);
 }
 
-void load_patch(String directory) {
+void PatchLoader::load_patch(String directory) {
     LOG_VERBOSE("Patch directory is: ", directory);
 
     // Create the dir when needed.
