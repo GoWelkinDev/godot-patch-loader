@@ -27,6 +27,7 @@ public:
     [[nodiscard]]
     PatchErrorCode get_error_code() const { return last_error; }
     void load_patches();
+    void load_patch(const String& directory);
 
     PatchLoader();
     ~PatchLoader();
