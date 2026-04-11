@@ -72,25 +72,32 @@ void PatchLoader::load_patches() {
 
     // Patch dir is beside binary
     String patch_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("patches/");
-    LOG_VERBOSE("Patch directory is: ", patch_directory);
+    String asset_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("AssetBundles/");
+    
+    load_patch(patch_directory);
+    load_patch(asset_directory);
+}
 
+void load_patch(String directory) {
+    LOG_VERBOSE("Patch directory is: ", directory);
 
     // Create the dir when needed.
-    if (!DirAccess::dir_exists_absolute(patch_directory)) {
-        LOG_VERBOSE("Patch directory does not exist, creating: " + patch_directory);
-        Error error = DirAccess::make_dir_absolute(patch_directory);
+    if (!DirAccess::dir_exists_absolute(directory)) {
+        LOG_VERBOSE("Patch directory does not exist, creating: " + directory);
+        Error error = DirAccess::make_dir_absolute(directory);
         if (error != OK) {
             LOG_ERROR("Could not create patch directory, either create it manually or update your permissions: " +
-                      patch_directory);
+                directory);
             _set_error(PATCH_ERROR_CODE_LACKING_PERMISSIONS);
             return;
-        } else {
+        }
+        else {
             LOG_VERBOSE("Patch directory created successfully.");
         }
     }
 
     // open folder
-    Ref<DirAccess> dir = DirAccess::open(patch_directory);
+    Ref<DirAccess> dir = DirAccess::open(directory);
     if (dir.is_null()) {
         LOG_ERROR("Could not open patch directory.");
         _set_error(PATCH_ERROR_CODE_DIRECTORY_NOT_FOUND);
@@ -101,7 +108,7 @@ void PatchLoader::load_patches() {
     std::vector<std::pair<int, String>> entries;
     dir->list_dir_begin();
 
-    for (const String &file_name: dir->get_files()) {
+    for (const String& file_name : dir->get_files()) {
         if (!file_name.get_extension().ends_with("pck"))
             continue;
 
@@ -119,24 +126,24 @@ void PatchLoader::load_patches() {
             return;
         }
 
-        String filePath = patch_directory.path_join(file_name);
+        String filePath = directory.path_join(file_name);
 
         entries.emplace_back(order, filePath);
     }
 
-    LOG_VERBOSE("Found " + String::num_int64(entries.size()) + " patches in directory: " + patch_directory);
-    for (const auto &entry: entries) {
+    LOG_VERBOSE("Found " + String::num_int64(entries.size()) + " patches in directory: " + directory);
+    for (const auto& entry : entries) {
         LOG_VERBOSE("Found patch: " + entry.second + " with order: " + String::num_int64(entry.first));
     }
 
     // Sort by order
-    std::sort(entries.begin(), entries.end(), [](const std::pair<int, String> &a, const std::pair<int, String> &b) {
+    std::sort(entries.begin(), entries.end(), [](const std::pair<int, String>& a, const std::pair<int, String>& b) {
         return a.first < b.first;
-    });
+        });
     LOG_VERBOSE("Sorted patches by order.");
 
     // Load patches in order
-    for (const auto &entry: entries) {
+    for (const auto& entry : entries) {
         String patch_file = entry.second;
         LOG_VERBOSE("Loading patch: " + patch_file);
 
