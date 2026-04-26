@@ -36,18 +36,6 @@ jobs:
             target: template_release
             platform: windows
             arch: x86_64
-          - identifier: android-debug-arm64v8
-            name: Android Debug arm64v8
-            runner: ubuntu-22.04
-            target: template_debug
-            platform: android
-            arch: arm64v8
-          - identifier: android-release-arm64v8
-            name: Android Release arm64v8
-            runner: ubuntu-22.04
-            target: template_release
-            platform: android
-            arch: arm64v8
     steps:
       - name: (Windows) Install mingw64
         if: ${{ startsWith(matrix.identifier, 'windows-') }}
@@ -56,21 +44,6 @@ jobs:
           sudo apt-get install mingw-w64
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
-      - name: (Android) Install JDK 17
-        if: ${{ startsWith(matrix.identifier, 'android-') }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-      - name: (Android) Install Android SDK
-        if: ${{ startsWith(matrix.identifier, 'android-') }}
-        uses: android-actions/setup-android@v3
-      - name: (Android) Install NDK r23c
-        if: ${{ matrix.platform == 'android' }}
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r23c
-          link-to-sdk: true
       - name: Install Python
         uses: actions/setup-python@v2
       - name: Install SCons
