@@ -71,8 +71,8 @@ void PatchLoader::load_patches() {
     }
 
     // Patch dir is beside binary
-    String patch_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("patches/");
-    String asset_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("AssetBundles/");
+    String patch_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("content/patches/");
+    String asset_directory = OS::get_singleton()->get_executable_path().get_base_dir().path_join("content/bundles/");
     
     load_patch(patch_directory);
     load_patch(asset_directory);
